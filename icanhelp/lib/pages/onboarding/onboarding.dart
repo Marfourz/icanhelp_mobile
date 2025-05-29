@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:icanhelp/components/ILogo.dart';
+import 'package:icanhelp/pages/auth/login.dart';
+import 'package:icanhelp/pages/auth/signup.dart';
 import 'package:icanhelp/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -14,44 +17,39 @@ class _OnboardingState extends State<Onboarding> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(
-              'images/logo.png',
-              width: 200.0,
-              height: 79.09,
-              fit: BoxFit.contain,
-            ),
-        
+            ILogo(),
             Expanded(
               child: PageView(
                 controller: _controller,
                 onPageChanged: (index) {
                   setState(() {
-                    isLastPage = (index == 1); // Si on est sur la dernière page
+                    isLastPage = (index == 1);
                   });
                 },
                 children: [
                   buildPage(
-                    image: 'images/onboarding1.png',
+                    image: 'assets/images/onboarding1.png',
                     title: "Trouve et partage des compétences",
                     description:
                         "Recherchez les compétences qui vous intéressent ou proposez votre savoir-faire. ",
                   ),
                   buildPage(
-                    image: 'images/onboarding2.png',
+                    image: 'assets/images/onboarding2.png',
                     title: "Echanger gratuitement",
-                    description: "Aucune barrière financière ! Échangez votre temps et vos connaissances pour apprendre et enseigner en toute simplicité.",
+                    description:
+                        "Aucune barrière financière ! Échangez votre temps et vos connaissances pour apprendre et enseigner en toute simplicité.",
                   ),
                 ],
               ),
             ),
-        
+
             // Indicateur de pages + Boutons
             SmoothPageIndicator(
               controller: _controller,
@@ -64,49 +62,38 @@ class _OnboardingState extends State<Onboarding> {
             ),
             const SizedBox(height: 20),
             isLastPage
-
                 ? Column(
-                  
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 10,
                   children: [
-                    
-                     SizedBox(
+                    SizedBox(
                       width: double.infinity,
-                       child: ElevatedButton(
-                        
+                      child: ElevatedButton(
                         onPressed: () {
-                          _controller.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
+                          Navigator.pushNamed(context, '/signup');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(vertical: 16),
                         ),
-                       
-                        child: const Text("S'inscrire"),
-                                           ),
-                     ),
 
-                     SizedBox(
+                        child: const Text("S'inscrire"),
+                      ),
+                    ),
+
+                    SizedBox(
                       width: double.infinity,
-                       child: ElevatedButton(
+                      child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/home',
-                          );
+                          Navigator.pushNamed(context, '/login');
                         },
-                         style: ElevatedButton.styleFrom(
-                        
-                          padding: EdgeInsets.symmetric(vertical: 16)
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: const Text("Se connecter"),
-                                           ),
-                     ),
+                      ),
+                    ),
                   ],
                 )
                 : Row(
@@ -114,15 +101,14 @@ class _OnboardingState extends State<Onboarding> {
                   children: [
                     TextButton(
                       onPressed:
-                          () => _controller.jumpToPage(2), // Passer l'onboarding
+                          () => {
+                            Navigator.pushNamed(context, '/signup'),
+                          }, // Passer l'onboarding
                       child: const Text("Passer"),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        _controller.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
+                        _controller.jumpToPage(2);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
@@ -145,31 +131,29 @@ class _OnboardingState extends State<Onboarding> {
     required String description,
   }) {
     return SingleChildScrollView(
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(image, height: 200),
-            const SizedBox(height: 20),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(image, height: 200),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
             ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                description,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 15, color: Colors.grey),
-              ),
+          ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, color: Colors.grey),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
