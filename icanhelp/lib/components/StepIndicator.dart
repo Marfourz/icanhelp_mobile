@@ -28,6 +28,7 @@ class StepIndicator extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isActive ? AppColors.primary : Colors.grey,
+                fontSize: 16
               ),
             ),
             const SizedBox(height: 5),

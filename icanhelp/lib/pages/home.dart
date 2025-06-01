@@ -21,13 +21,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   late ApiService apiService;
   UserProfile? user;
   bool isLoadingUser = true;
   int _selectedIndex = 0;
   int index = 0;
-
   late final client;
   List<Widget> widgetOptions = [];
 
@@ -41,12 +39,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _fetchMyProfil();
 
-    widgetOptions = [
-      PrincipalPage(),
-      ChatListPage(),
-      InvitationsPage(),
-    ];
-   
+    widgetOptions = [PrincipalPage(), ChatListPage(), InvitationsPage()];
   }
 
   List<String?> interests = [];
@@ -57,70 +50,72 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       appBar:
           _selectedIndex == 0
-              ? PreferredSize(
-                preferredSize: Size.fromHeight(80),
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: AppBar(
-                    automaticallyImplyLeading: false,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    title: Row(
-                      children: [
-                        isLoadingUser
-                            ? Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: CircleAvatar(
-                                radius: 25,
-                                backgroundColor: Colors.white,
-                              ),
-                            )
-                            : Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.primary,
-                                  width: 3,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(25),
-                                ),
-                              ),
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                  'images/image1.jpg',
-                                ),
-                              ),
-                            ),
-                        SizedBox(width: 8),
-                        isLoadingUser
-                            ? Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                width: 100,
-                                height: 20,
-                                color: Colors.white,
-                              ),
-                            )
-                            : Text(
-                              user != null ? user!.user.username! : '...',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange,
-                              ),
-                            ),
-                        Spacer(),
-                        Icon(Icons.notification_add, color: Colors.black54),
-                      ],
-                    ),
+              ? AppBar(
+                toolbarHeight: 100,
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                titleSpacing: 10,
+                leadingWidth: 100,
+
+                actions: <Widget>[
+                  //IconButton
+                  IconButton(
+                    icon: const Icon(Icons.notification_add),
+                    tooltip: 'Comment Icon',
+                    onPressed: () {},
                   ),
-                ),
+
+                  //IconButton
+                  IconButton(
+                    icon: const Icon(Icons.settings),
+                    tooltip: 'Setting Icon',
+                    onPressed: () {},
+                  ),
+                ],
+
+                leading:
+                    isLoadingUser
+                        ? Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.white,
+                          ),
+                        )
+                        : Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundImage: AssetImage('assets/images/image2.jpg'),
+                            backgroundColor: AppColors.primary,
+                          ),
+                        ),
+                titleTextStyle: TextStyle(fontSize: 30),
+                title:
+                    isLoadingUser
+                        ? Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 100,
+                            height: 20,
+                            color: Colors.white,
+                          ),
+                        )
+                        : Text(
+                          user != null ? user!.user.username! : '...',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                        ),
               )
               : null,
       body: widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: Container(
+        width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(32)),
@@ -128,22 +123,36 @@ class _HomePageState extends State<HomePage> {
             BoxShadow(color: Colors.black12, blurRadius: 10, spreadRadius: 2),
           ],
         ),
-        padding: EdgeInsets.symmetric(vertical: 2),
-        margin: EdgeInsets.fromLTRB(30, 0, 30, 30),
-        child: BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: Colors.grey,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+        padding: EdgeInsets.symmetric(vertical: 12),
+        margin: EdgeInsets.fromLTRB(30, 0, 30, 50),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildNavIcon(icon:Icons.home, index:0),
+            _buildNavIcon(icon:Icons.chat, index:1),
+            _buildNavIcon(icon:Icons.person, index:2 ),
           ],
+        )
+      ),
+    );
+  }
+
+  Widget _buildNavIcon({required IconData icon, required int index}) {
+    final isSelected = _selectedIndex == index;
+
+    return GestureDetector(
+      onTap: () => _onItemTapped(index),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          size: 30,
+          color: isSelected ? Colors.white : Colors.black45,
         ),
       ),
     );

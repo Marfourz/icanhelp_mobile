@@ -37,21 +37,19 @@ class _InputFieldState extends State<InputField> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Container(
         
-        padding: EdgeInsets.symmetric( horizontal: 8),
+        padding: EdgeInsets.symmetric( horizontal: 12),
         decoration: BoxDecoration(
           border: Border.all(color: Color.fromRGBO(0, 0, 0, .2)),
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
         child: 
         TextFormField(
-          
+
           obscureText: widget.isPassword && !widget._showPassword,
           keyboardType: widget.keyboardType,
           validator: widget.validator,
           controller: widget.controller,
-         
           decoration: InputDecoration(
-            
             hintText: widget.label,
             border: InputBorder.none,
             suffixIcon: widget.isPassword ? IconButton(onPressed: (){

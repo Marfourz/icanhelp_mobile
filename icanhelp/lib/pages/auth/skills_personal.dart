@@ -71,7 +71,7 @@ class _SkillsPersonalScreenState extends State<SkillsPersonalScreen> {
               Text(
                 "Compétences personnelles",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -228,6 +228,8 @@ class _SkillsPersonalScreenState extends State<SkillsPersonalScreen> {
     try {
       addedSkills = await apiService.getUserPersonalSkills();
       popularSkills = (await apiService.getPopularSkills(10, 'personal')).results;
+
+      print(popularSkills);
       setState(() {});
     } catch (e) {
       print("Erreur lors de la récupération des compétences : $e");
@@ -258,12 +260,7 @@ class _SkillsPersonalScreenState extends State<SkillsPersonalScreen> {
      addedSkills = await apiService.addUserPersonalSkills(
         {"competences": selectedSkills},
       );
-      MessageSnackbar.show(
-          context,
-          message: "Compétence ajoutée !!" ,
-          isSuccess: true, 
-          onTop: true
-        );
+
       setState(() {
         _searchController.text = "";
       });

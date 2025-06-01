@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:icanhelp/models/Skill.dart';
 import 'package:icanhelp/models/UserProfile.dart';
@@ -19,6 +21,8 @@ class _PrincipalPageState extends State<PrincipalPage> {
   List<UserProfile> users = [];
   bool isLoadingUser = true;
   bool isLoadingUsers = true;
+
+  Timer? _debounce;
 
   
 
@@ -48,6 +52,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
             SizedBox(height: 15),
 
             TextField(
+              onChanged: _onSearchChanged,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: "Ex: Guitare, Data Science, Peinture...",
@@ -60,23 +65,23 @@ class _PrincipalPageState extends State<PrincipalPage> {
             ),
             SizedBox(height: 15),
 
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: interests.map((interest) {
-                return Chip(
-                  label: Text(interest!),
-                  backgroundColor: Colors.orange[100],
-                );
-              }).toList(),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: interests.map((interest) {
+                  return Chip(
+                    label: Text(interest!),
+                    backgroundColor: Colors.white,
+                  );
+                }).toList(),
             ),
             
             SizedBox(height: 20),
 
-            Text(
-              "Personnes recommandées pour toi",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+           // Text(
+             // "Personnes recommandées pour toi",
+              //style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            //),
             SizedBox(height: 10),
 
             Expanded(
@@ -86,72 +91,76 @@ class _PrincipalPageState extends State<PrincipalPage> {
                       itemCount: users.length,
                       itemBuilder: (context, index) {
                         final user = users[index];
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 12),
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: Colors.grey.shade200),
-                          ),
-                          child: 
-                          GestureDetector(
-                            onTap: ()=>{
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilDetails(id: user.id),
-                                  ),
-                            )
-                            },
-                            child:  Row(
-                            children: [
-                              CircleAvatar(
-                                backgroundImage: AssetImage("images/avatar_placeholder.png"),
-                                radius: 30,
+                        return Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 12),
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      user.user.username!,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
+                              child:
+                              GestureDetector(
+                                onTap: ()=>{
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfilDetails(id: user.id),
+                                      ),
+                                )
+                                },
+                                child:  Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: AssetImage("assets/images/image1.jpg"),
+                                    radius: 30,
+                                  ),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user.user.username!,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          getFormattedSkills(user.skillsPersonal),
+                                          style: TextStyle(color: Colors.grey[600]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                       Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ContactUserPage(userProfile: user),
+                                            ),
+                                          );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: AppColors.primary,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
                                       ),
                                     ),
-                                    Text(
-                                      getFormattedSkills(user.skillsPersonal),
-                                      style: TextStyle(color: Colors.grey[600]),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                   Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ContactUserPage(userProfile: user),
-                                        ),
-                                      );
-                                },
-                                style: TextButton.styleFrom(
-                                  foregroundColor: AppColors.primary,
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
+                                    child: Text("Contacter"),
                                   ),
-                                ),
-                                child: Text("Contacter"),
+                                ],
                               ),
-                            ],
-                          ),
-                      
-                          )
-                           );
+
+                              )
+                               ),
+                            Divider(height: 1,color: Colors.black12,)
+                          ],
+                        );
                       },
                     ),
             ),
@@ -260,4 +269,32 @@ class _PrincipalPageState extends State<PrincipalPage> {
     }
     return skillNames.join(", ");
   }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 1000), () async{
+      print('Recherche déclenchée pour : $query');
+      try{
+        setState(() {
+          isLoadingUsers = true;
+        });
+
+          users = (await apiService.searchUsersProfil(query));
+        setState(() {
+          isLoadingUsers = false;
+        });
+          print("salut");
+      }
+      catch(error){
+        setState(() {
+          isLoadingUsers = false;
+        });
+          print(error);
+      }
+
+    });
+  }
+
+
 }

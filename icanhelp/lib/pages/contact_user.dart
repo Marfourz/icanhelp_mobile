@@ -24,7 +24,7 @@ class ContactUserPage extends StatefulWidget {
 class _ContactUserPageState extends State<ContactUserPage> {
   final Map<String, dynamic> user = {
     "name": "Marie Dubois",
-    "profilePic": 'images/image2.jpg',
+    "profilePic": 'assets/images/image2.jpg',
     "skills": ["Guitare", "Piano"],
   };
 

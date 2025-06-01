@@ -74,11 +74,9 @@ class _SignupState extends State<Signup> {
         setState(() {
           loading = false;
         });
-
         String errorMessage = "";
-
         final res = (error as DioException).response;
-
+        print(res.toString());
         errorMessage = res!.statusMessage ?? "Un problème est survenu";
         MessageSnackbar.showBackendErrors(context, res.data);
       }

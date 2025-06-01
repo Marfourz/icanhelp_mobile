@@ -66,6 +66,7 @@ final String startRoute;
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'ICanHelp',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: AppColors.primary,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

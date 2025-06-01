@@ -17,7 +17,7 @@ part 'api_service.g.dart';
 
 
 //@RestApi(baseUrl: 'http://localhost:8000/')
-@RestApi(baseUrl: 'https://5040-46-193-67-60.ngrok-free.app/')
+@RestApi(baseUrl: 'https://1216-46-193-67-60.ngrok-free.app/')
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
 
@@ -55,11 +55,15 @@ abstract class ApiService {
   @GET('competences')
   Future<ApiResponse<Skill>> getPopularSkills(@Query("limit") int limit,@Query("type") String type,);
 
+
   @GET('users_profil/my_profil')
   Future<UserProfile> getMyProfil();
 
-  @GET('users_profil/')
+  @GET('users_profil')
   Future<ApiResponse<UserProfile>> getUsersProfil();
+
+  @GET('users_profil/search')
+  Future<List<UserProfile>> searchUsersProfil(@Query("search") String search);
 
   @GET('users_profil/{id}')
   Future<UserProfile> getUserProfil(
@@ -100,6 +104,7 @@ abstract class ApiService {
     @Path('id') int id,
     @Body() SendMessage body,
   );
+
 
 }
 
