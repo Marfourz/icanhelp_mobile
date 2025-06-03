@@ -46,7 +46,9 @@ class _InvitationsPageState extends State<InvitationsPage> with SingleTickerProv
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(invitation.createdBy.user.username!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(
+                    isReceived ? invitation.createdBy.user.username! : invitation.receiver.user.username!,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 SizedBox(height: 4),
                 Text(invitation.message, style: TextStyle(color: Colors.grey[600]), maxLines: 2, overflow: TextOverflow.ellipsis),
               ],

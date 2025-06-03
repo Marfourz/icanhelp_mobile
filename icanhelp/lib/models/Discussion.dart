@@ -9,6 +9,7 @@ class Discussion {
   final int id;
   final String name;
   final DateTime createdAt;
+  final DateTime updatedAt;
   final UserProfile createdBy;
   @JsonKey(defaultValue: []) 
   final List<UserProfile> users;
@@ -17,16 +18,17 @@ class Discussion {
   final Map<String, dynamic>? lastMessage;
   
   @JsonKey(defaultValue: 0)
-  final int unreadMessagesCount; 
+  final int nbMessagesNotRead;
 
   Discussion({
     required this.id,
     required this.name,
     required this.createdAt,
+    required this.updatedAt,
     required this.createdBy,
     required this.users,
     this.lastMessage,
-    this.unreadMessagesCount = 0,
+    this.nbMessagesNotRead = 0,
   });
 
 

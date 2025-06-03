@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:icanhelp/models/Skill.dart';
 import 'package:icanhelp/models/UserProfile.dart';
 import 'package:icanhelp/pages/contact_user.dart';
@@ -21,6 +22,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
   List<UserProfile> users = [];
   bool isLoadingUser = true;
   bool isLoadingUsers = true;
+  final searchController = TextEditingController();
 
   Timer? _debounce;
 
@@ -52,6 +54,7 @@ class _PrincipalPageState extends State<PrincipalPage> {
             SizedBox(height: 15),
 
             TextField(
+              controller: searchController,
               onChanged: _onSearchChanged,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
@@ -69,9 +72,15 @@ class _PrincipalPageState extends State<PrincipalPage> {
                 spacing: 8,
                 runSpacing: 4,
                 children: interests.map((interest) {
-                  return Chip(
-                    label: Text(interest!),
-                    backgroundColor: Colors.white,
+                  return GestureDetector(
+                    onTap: (){
+                      searchController?.text = interest;
+                      _onSearchChanged(interest);
+                    },
+                    child: Chip(
+                      label: Text(interest!),
+                      backgroundColor: Colors.white,
+                    ),
                   );
                 }).toList(),
             ),
@@ -274,7 +283,6 @@ class _PrincipalPageState extends State<PrincipalPage> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     _debounce = Timer(const Duration(milliseconds: 1000), () async{
-      print('Recherche déclenchée pour : $query');
       try{
         setState(() {
           isLoadingUsers = true;

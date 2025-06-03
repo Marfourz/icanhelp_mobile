@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 class DioClient {
   static final Dio _dio = Dio();
+
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   static Dio getInstance() {
     _dio.interceptors.add(InterceptorsWrapper(
@@ -18,6 +21,7 @@ class DioClient {
 
         return handler.next(options);
       },
+
     ));
     return _dio;
   }

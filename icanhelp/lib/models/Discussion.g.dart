@@ -10,6 +10,7 @@ Discussion _$DiscussionFromJson(Map<String, dynamic> json) => Discussion(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String,
   createdAt: DateTime.parse(json['createdAt'] as String),
+  updatedAt: DateTime.parse(json['updatedAt'] as String),
   createdBy: UserProfile.fromJson(json['createdBy'] as Map<String, dynamic>),
   users:
       (json['users'] as List<dynamic>?)
@@ -17,7 +18,7 @@ Discussion _$DiscussionFromJson(Map<String, dynamic> json) => Discussion(
           .toList() ??
       [],
   lastMessage: json['lastMessage'] as Map<String, dynamic>?,
-  unreadMessagesCount: (json['unreadMessagesCount'] as num?)?.toInt() ?? 0,
+  nbMessagesNotRead: (json['nbMessagesNotRead'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$DiscussionToJson(Discussion instance) =>
@@ -25,8 +26,9 @@ Map<String, dynamic> _$DiscussionToJson(Discussion instance) =>
       'id': instance.id,
       'name': instance.name,
       'createdAt': instance.createdAt.toIso8601String(),
+      'updatedAt': instance.updatedAt.toIso8601String(),
       'createdBy': instance.createdBy,
       'users': instance.users,
       'lastMessage': instance.lastMessage,
-      'unreadMessagesCount': instance.unreadMessagesCount,
+      'nbMessagesNotRead': instance.nbMessagesNotRead,
     };

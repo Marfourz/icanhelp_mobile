@@ -18,7 +18,7 @@ class EmptyState extends StatelessWidget {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+            //color: AppColors.primary,
           ),
         ),
         const SizedBox(height: 10),

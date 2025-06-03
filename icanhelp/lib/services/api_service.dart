@@ -13,11 +13,8 @@ import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 part 'api_service.g.dart';
 
-
-
-
 //@RestApi(baseUrl: 'http://localhost:8000/')
-@RestApi(baseUrl: 'https://1216-46-193-67-60.ngrok-free.app/')
+@RestApi(baseUrl: 'https://4a75-46-193-67-60.ngrok-free.app/')
 abstract class ApiService {
   factory ApiService(Dio dio, {String? baseUrl}) = _ApiService;
 

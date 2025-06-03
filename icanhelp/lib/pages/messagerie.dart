@@ -12,6 +12,7 @@ import 'package:icanhelp/services/dio_client.dart';
 import 'package:icanhelp/theme.dart';
 import 'package:icanhelp/models/Message.dart' as i_message;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../socket_helper.dart' as socketHelper;
 
 class Messagerie extends StatefulWidget {
   final int discussionId;
@@ -36,7 +37,12 @@ class _MessagerieState extends State<Messagerie> {
     apiService = ApiService(dio);
     _loadMessages();
     _user = types.User(id: '0');
-    _connectToWebSocket();
+    _loadMyProfil();
+    socketHelper.connectToWebSocket(
+        widget.discussionId,
+        'chat_message',
+        _onNewMessageReceived
+    );
   }
 
   _loadMyProfil() async {
@@ -86,38 +92,20 @@ class _MessagerieState extends State<Messagerie> {
     );
   }
 
-  void _connectToWebSocket() async {
-    await _loadMyProfil();
-    final token = await storage.read(key: 'access_token');
-    final uri = Uri.parse(
-      'ws:/5040-46-193-67-60.ngrok-free.app/ws/chat/${widget.discussionId}/?token=$token',
+  void _onNewMessageReceived(data){
+    final newMessage = types.TextMessage(
+      author:
+      data['sender'] == myProfil.id
+          ? _user
+          : types.User(id: "$data['sender']"),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      id: data['id'].toString(),
+      text: data['message'].toString(),
     );
-    final channel = WebSocketChannel.connect(uri);
-
-    await channel.ready;
-
-    channel.stream.listen(
-      (message) {
-        final data = json.decode(message);
-        final newMessage = types.TextMessage(
-          author:
-              data['sender'] == myProfil.id
-                  ? _user
-                  : types.User(id: "$data['sender']"),
-          createdAt: DateTime.now().millisecondsSinceEpoch,
-          id: data['id'].toString(),
-          text: data['message'].toString(),
-        );
-        _addMessage(newMessage);
-      },
-      onError: (error) {
-        print("Erreur WebSocket: $error");
-      },
-      onDone: () {
-        print("WebSocket fermé");
-      },
-    );
+    _addMessage(newMessage);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
